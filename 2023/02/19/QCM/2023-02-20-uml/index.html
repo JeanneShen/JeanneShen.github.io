@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/stich-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/picaso-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="不同视图 用例视图(vue des cas d’utilisation)：这是系统参与者“看到”的系统描述。 它对应于每个参与者的预期需求（即 WHAT 和 WHO） 逻辑视图(vue logique)：这是从内部看到的系统定义。 它解释了如何满足参与者的需求（这就是 HOW） 实现视图(vue d’implementation)：该视图定义了模块之间的依赖关系。 过程视图(vue des pro">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day Day Up">
+<meta property="og:url" content="http://example.com/2023/02/19/QCM/2023-02-20-uml/index.html">
+<meta property="og:site_name" content="Day Day Up">
+<meta property="og:description" content="不同视图 用例视图(vue des cas d’utilisation)：这是系统参与者“看到”的系统描述。 它对应于每个参与者的预期需求（即 WHAT 和 WHO） 逻辑视图(vue logique)：这是从内部看到的系统定义。 它解释了如何满足参与者的需求（这就是 HOW） 实现视图(vue d’implementation)：该视图定义了模块之间的依赖关系。 过程视图(vue des pro">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.postimg.cc/gj2Y41Pg/image.png">
+<meta property="og:image" content="https://i.postimg.cc/vH1yBr8x/image.png">
+<meta property="og:image" content="https://i.postimg.cc/JhMSbZ8q/image.png">
+<meta property="og:image" content="https://i.postimg.cc/h4YFHX8D/image.png">
+<meta property="og:image" content="https://i.postimg.cc/CL6jCgV6/image.png">
+<meta property="og:image" content="https://i.postimg.cc/J00stst7/image.png">
+<meta property="og:image" content="https://i.postimg.cc/SNXXhYwD/image.png">
+<meta property="og:image" content="https://i.postimg.cc/sXDX0MYP/image.png">
+<meta property="og:image" content="https://i.postimg.cc/MTNnMWBy/image.png">
+<meta property="og:image" content="https://i.postimg.cc/W1ThJYdf/image.png">
+<meta property="og:image" content="https://i.postimg.cc/FKqrGTKv/image.png">
+<meta property="og:image" content="https://i.postimg.cc/vTwQwD9S/image.png">
+<meta property="og:image" content="https://i.postimg.cc/bwwqh7D8/image.png">
+<meta property="og:image" content="https://i.postimg.cc/VkhPcdPB/image.png">
+<meta property="og:image" content="https://i.postimg.cc/PJMkGydP/image.png">
+<meta property="og:image" content="https://i.postimg.cc/2yGg95xW/image.png">
+<meta property="article:published_time" content="2023-02-19T22:12:55.148Z">
+<meta property="article:modified_time" content="2023-02-20T00:33:15.645Z">
+<meta property="article:author" content="安然">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.postimg.cc/gj2Y41Pg/image.png">
+
+<link rel="canonical" href="http://example.com/2023/02/19/QCM/2023-02-20-uml/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | Day Day Up</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Day Day Up</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/19/QCM/2023-02-20-uml/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="安然">
+      <meta itemprop="description" content="随手写点什么">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Day Day Up">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-19 23:12:55" itemprop="dateCreated datePublished" datetime="2023-02-19T23:12:55+01:00">2023-02-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-20 01:33:15" itemprop="dateModified" datetime="2023-02-20T01:33:15+01:00">2023-02-20</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="不同视图"><a href="#不同视图" class="headerlink" title="不同视图"></a>不同视图</h1><ul>
+<li>用例视图(vue des cas d’utilisation)：这是系统参与者“看到”的系统描述。 它对应于每个参与者的预期需求（即 WHAT 和 WHO）</li>
+<li>逻辑视图(vue logique)：这是从内部看到的系统定义。 它解释了如何满足参与者的需求（这就是 HOW）</li>
+<li>实现视图(vue d’implementation)：该视图定义了模块之间的依赖关系。</li>
+<li>过程视图(vue des processus)：这是时间和技术视图，它实现了并发任务、刺激、控制、同步等概念。</li>
+<li>部署视图(vue de deploiement)：这个视图描述了系统每个元素的地理位置和物理架构（这是WHERE）</li>
+</ul>
+<h1 id="不同图的分类"><a href="#不同图的分类" class="headerlink" title="不同图的分类"></a>不同图的分类</h1><ul>
+<li>结构图&#x2F;静态图<ol>
+<li>部署图(Deployment diagram)：用于表示硬件元素(计算机、外设、网络、存储系统等)以及系统组件在这些硬件元素上的分布方式和交互方式</li>
+<li>包图(Package Diagram)：表示系统的包</li>
+<li>复合结构图(Composite Structure Diagram)：表示了class的内部结构以及其与系统其他部分的交互点</li>
+</ol>
+</li>
+<li>行为图&#x2F;动态图<ol>
+<li>用例图(Use case diagram)：描述系统与参与者之间交互的可能性，即系统必须提供的所有功能。</li>
+<li>状态转换图(Diagramme États-Transitions)：显示了系统的状态如何根据系统时间进行修改</li>
+<li>活动图(Activity Diagram)：状态转换图的变体，允许根据系统状态表示事件的触发，也可以模拟可并行化的行为（多线程或多进程）</li>
+</ol>
+</li>
+<li>交互图<ol>
+<li>序列图(Sequence Diagram)：系统元素和&#x2F;或参与者之间处理和交互过程的顺序表示</li>
+<li>通信图(Interaction Overview Diagram)：序列图的简化表示，重点关注对象之间的消息交换</li>
+<li>时序图(Timing Diagram)：突出显示时间方面的交互表示<br><a target="_blank" rel="noopener" href="https://postimg.cc/0MhRyWjS"><img src="https://i.postimg.cc/gj2Y41Pg/image.png" alt="image.png"></a></li>
+</ol>
+</li>
+</ul>
+<h1 id="用例图"><a href="#用例图" class="headerlink" title="用例图"></a>用例图</h1><p>定义：表示用例、参与者以及它们之间的关系。从用户的角度用动作和反应的形式描述系统的行为。帮助定义系统边界以及系统与环境之间的关系</p>
+<ul>
+<li>用户：存在于系统之外，所有可以与系统交换信息的人、机器、其他系统等。子用户、父用户。<ul>
+<li>主要用户：主要使用系统的人</li>
+<li>次要用户：管理或维护的人员</li>
+<li>外部硬件：属于范围的一部分且必须使用的硬件设备</li>
+<li>其他系统：系统必须与之交互的系统</li>
+</ul>
+</li>
+<li>用例：描述一组动作序列，系统执行这些动作以提供对参与者有价值的结果。<ul>
+<li>提取常见行为：子用户的行为一定也是父用户的行为</li>
+<li>包括：一个行为包括在另一个用例中，分解复杂的行为。《include》</li>
+<li>扩展：在某些点添加复杂的备用路径,可以添加条件。《extende》<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Tant que condition faire:    Si condition:</span><br><span class="line">&lt;&lt;action&gt;&gt;                   alors &lt;&lt;action&gt;&gt;</span><br><span class="line">&lt;&lt;action&gt;&gt;                   sinon &lt;&lt;action&gt;&gt;</span><br><span class="line"></span><br><span class="line">Repeter n fois:           Choix:</span><br><span class="line">&lt;&lt;action&gt;&gt;                condition:&lt;&lt;action&gt;&gt;condition:</span><br><span class="line">&lt;&lt;action&gt;&gt;                &lt;&lt;action&gt;&gt;,&lt;&lt;action&gt;&gt;</span><br></pre></td></tr></table></figure>
+<a target="_blank" rel="noopener" href="https://postimg.cc/dLKpNTyJ"><img src="https://i.postimg.cc/vH1yBr8x/image.png" alt="image.png"></a></li>
+</ul>
+</li>
+</ul>
+<h1 id="封装图"><a href="#封装图" class="headerlink" title="封装图"></a>封装图</h1><p>定义：显示包的组织及其元素，表示类包的命名空间、逻辑或物理截断。</p>
+<ul>
+<li>可以具有嵌套包的层次结构<br><a target="_blank" rel="noopener" href="https://postimg.cc/RWpPm3N6"><img src="https://i.postimg.cc/JhMSbZ8q/image.png" alt="image.png"></a></li>
+<li>包的遏制：有两种等效方式</li>
+<li>依赖：<ol>
+<li>&lt;<merge>&gt;：一个包导入其他包的功能</li>
+<li>&lt;<import>&gt;：一个包需要其他包的功能帮助<br><a target="_blank" rel="noopener" href="https://postimg.cc/HjbPMsPR"><img src="https://i.postimg.cc/h4YFHX8D/image.png" alt="image.png"></a></li>
+</ol>
+</li>
+</ul>
+<h1 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h1><p>定义：描述系统的通用模型，类使用包含类名、属性(field) 和方法(method) 且带有分割线的矩形来表示。</p>
+<ul>
+<li>属性：对应类的属性，属性名、类型、初始值等</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Employee</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-name : String <br> - age : Int<br>- email : String</td>
+</tr>
+<tr>
+<td>+ modifyInfo() : void<br># Method() : String</td>
+</tr>
+</tbody></table>
+<ul>
+<li>操作：指定对象的行为，类的创造器、类的摧毁器、返回类的全部或部分状态的选择器、改变类的全部或部分状态的修改器，返回类的全部或部分状态的迭代器<ol>
+<li>操作参数的方向:</li>
+<li>In：只传入参数，执行中不修改参数</li>
+<li>Out：只传出参数，调用该操作可以获得信息</li>
+<li>InOut：输入输出参数</li>
+<li>适用于操作的预定义属性：</li>
+</ol>
+<ul>
+<li>{requete}: 不改变相关实例状态的操作</li>
+<li>{concurrence&#x3D;valeur}: 其中值是顺序的</li>
+<li>{abstrait}: 操作未在类中实现</li>
+<li>{estFeuille}: 不能在类中重新定义的操作</li>
+<li>{estRacine}: 在类层次中首次定义的操作<br>  <a target="_blank" rel="noopener" href="https://postimg.cc/N5m9YZF1"><img src="https://i.postimg.cc/CL6jCgV6/image.png" alt="image.png"></a></li>
+</ul>
+</li>
+<li>描述：默认对象的属性值被封装在对象内部，不能直接被其他对象直接操作。可见性规则有：私有(-)、受保护(#)、公共(+)   可见性 名称：类型 [&#x3D; 缺省值]</li>
+<li>Stereotype：UML的主要扩展机制。可以创造新的类型，书名号表示<ol>
+<li><code>&lt;&lt;Displayable Object&gt;&gt;</code>: 创建可显示对象</li>
+<li><code>&lt;&lt;class implementation&gt;&gt;</code>: 一个类在编程语言中实现</li>
+<li><code>&lt;&lt;enumeration&gt;&gt;</code>: 定义一个类型的值域的标识符集合的类</li>
+<li><code>&lt;&lt;metaclass&gt;&gt;</code>: 类的类</li>
+<li><code>&lt;&lt;powertype&gt;&gt;</code>:一个类是元类型,即他的实例都是一个类型的子类性</li>
+</ol>
+</li>
+<li>关键词：出现在元模型中，不是UML语言的扩展<ol>
+<li><code>&lt;&lt;actor&gt;&gt;</code>: 该类模拟了一组系统中用户的角色，</li>
+<li><code>&lt;&lt;interface&gt;&gt;</code>:只包含可见操作描述的类</li>
+<li><code>&lt;&lt;signal&gt;&gt;或&lt;&lt;exception&gt;&gt;</code>: 模拟信号类型的元素</li>
+</ol>
+</li>
+<li>参数化类：类模型，不能直接使用，必须实例化形式参数已给出参数化类  </li>
+<li>实用类：在不构建完整类的情况下对模块的元素进行分组，使用<code>&lt;&lt;Utility&gt;&gt;stereotype</code></li>
+</ul>
+<h2 id="类之间的关联关系"><a href="#类之间的关联关系" class="headerlink" title="类之间的关联关系"></a>类之间的关联关系</h2><p>两个类之间的关联：由名称、相关的两个类和multiplicite定义，关联后面跟方向箭头(实心箭头)表方向</p>
+<ul>
+<li>Multiplicite: 1 只有一, 0..1 零或一, M..N 从M到N, * ou 0..* 从零到多个, 1..* 从一到多个<br><a target="_blank" rel="noopener" href="https://postimg.cc/p5NW6XD3"><img src="https://i.postimg.cc/J00stst7/image.png" alt="image.png"></a></li>
+<li>关联关系<ol>
+<li>单项关联：单向箭头表示</li>
+<li>双向关联：默认情况下是双向关联。用直线连接</li>
+<li>自关联：在系统中可能会存在一些类的属性对象类型为该类本身，如两人结婚等</li>
+</ol>
+</li>
+<li>聚合关系：非对称关联，用空心菱形端表示 ’整体‘，强调 ‘整体’ 包含 ‘部分’，但部分可脱离整体单独存在。</li>
+<li>组合关系：这里的“部分”脱离了“整体”便不复存在，暗示对聚合侧的多重性值约束。组合和属性在语义上是等价的。<br><a target="_blank" rel="noopener" href="https://postimg.cc/3dTrjNrv"><img src="https://i.postimg.cc/SNXXhYwD/image.png" alt="image.png"></a></li>
+<li>依赖关系：是一种使用关系，常体现在某个类的方法使用另一个类的对象作为参数。虚线表示，由依赖的一方指向被依赖的一方。<br><a target="_blank" rel="noopener" href="https://postimg.cc/HJRdrsPj"><img src="https://i.postimg.cc/sXDX0MYP/image.png" alt="image.png"></a></li>
+<li>继承关系&#x2F;泛化关系：描述父类与子类之间的关系。用带空心三角形的直线来表示。<br>泛化关系可以添加约束：<ol>
+<li>{disjoint} ou {Exclusif}: 子类只能是super-class</li>
+<li>{chevauchement} ou {Inclusif} : 子类可以是多个super-class的子类</li>
+<li>{complète} ： 泛化结束，不能在添加新的子类</li>
+<li>{Incomplète}：还可以添加新的子类</li>
+</ol>
+</li>
+<li>接口&#x2F;抽象类：<br>接口和类之间存在一种实现(realization)关系，用代空心三角的虚线箭头表示<ol>
+<li>抽象类：它的接口是它所有非私有属性的签名，使用斜体名称或{abstract}表示</li>
+<li>接口：使用类型来描述类的可见行为，无需实现。可以提供一组服务的局部或全局视图。可以用圆圈表示接口。</li>
+</ol>
+</li>
+</ul>
+<h2 id="关联的约束"><a href="#关联的约束" class="headerlink" title="关联的约束"></a>关联的约束</h2><ol>
+<li>{ordered} : ⼀个顺序约束描述了放置在集合中的对象，顺序必须保持</li>
+<li>{sous-ensemble} : 一个集合包含在另一个集合中</li>
+<li>{ou-exclusif} : 对于给定的对象，只有一个有效的关联<br>  <a target="_blank" rel="noopener" href="https://postimg.cc/xJGfBVtC"><img src="https://i.postimg.cc/MTNnMWBy/image.png" alt="image.png"></a></li>
+</ol>
+<h1 id="对象图"><a href="#对象图" class="headerlink" title="对象图"></a>对象图</h1><p>对象图<br>定义：描述类图的特定实例。不包含操作</p>
+<ul>
+<li>对象：对象是类的实例，是一个封装了状态和行为的实体。<ol>
+<li>对象名：在矩形框的顶端显示。</li>
+<li>类型：具体的类目</li>
+<li>状态：由对象的所有属性以及运行时的当前值组成。</li>
+<li>表示法：在对象名后跟一个冒号加上类型名，并且使用下划线与类进行区分</li>
+</ol>
+</li>
+<li>链：两个或多个对象之间的独立连接。类似于类图中的关联关系<br><a target="_blank" rel="noopener" href="https://postimg.cc/KRpZ6Nrn"><img src="https://i.postimg.cc/W1ThJYdf/image.png" alt="image.png"></a></li>
+</ul>
+<h2 id="类图与对象图对比"><a href="#类图与对象图对比" class="headerlink" title="类图与对象图对比"></a>类图与对象图对比</h2><p><a target="_blank" rel="noopener" href="https://postimg.cc/qtsHvXnD"><img src="https://i.postimg.cc/FKqrGTKv/image.png" alt="image.png"></a><br><a target="_blank" rel="noopener" href="https://postimg.cc/bDLXQymQ"><img src="https://i.postimg.cc/vTwQwD9S/image.png" alt="image.png"></a></p>
+<h1 id="时序图"><a href="#时序图" class="headerlink" title="时序图"></a>时序图</h1><p>定义：通过描述对象间发送消息的时间顺序显示多个对象之间的动态协作状态。元素有角色（Actors）、对象（Object）、生命线（Lifetime）、消息（Message）、激活（Focus of Control）等等</p>
+<ul>
+<li><p>生命线：给每个角色和对象加上一条生命线，就是从角色（或对象）引出向下延伸的虚线，表示时序图存在的时间轴。如果对象被创建或销毁，可以在序列图中开始和&#x2F;或停⽌ (X) 此图定义的持续时间。<br><a target="_blank" rel="noopener" href="https://postimg.cc/YhZ5Nyzy"><img src="https://i.postimg.cc/bwwqh7D8/image.png" alt="image.png"></a></p>
+</li>
+<li><p>消息：发送出去的消息叫 Request（请求，用实心箭头表示并加注说明），反馈的消息是 Response（响应，用虚线箭头表示并加返回内容）。</p>
+<ol>
+<li>发送消息有三大类：</li>
+</ol>
+<ul>
+<li>扁平化控制流程：知识下一步进展的发送；异步消息</li>
+<li>过程调用或嵌套控制流：嵌套序列必须结束；封闭序列才能重获控制权</li>
+<li>从过程中返回调用：激活结束时隐含；发送异步和并⾏消息的情况下，可以指⽰执⾏结束<br><a target="_blank" rel="noopener" href="https://postimg.cc/9DyndXMr"><img src="https://i.postimg.cc/VkhPcdPB/image.png" alt="image.png"></a></li>
+</ul>
+<ol start="2">
+<li>消息类型</li>
+</ol>
+<ul>
+<li>递归消息：对象多次处于激活状态</li>
+<li>反射消息：对象向自己发送消息<br><a target="_blank" rel="noopener" href="https://postimg.cc/rRzHxS0k"><img src="https://i.postimg.cc/PJMkGydP/image.png" alt="image.png"></a></li>
+</ul>
+<ol start="3">
+<li>时间限制：用斜箭头表示不可忽视的时间延迟，可以用时间表达式表示具体的时间</li>
+</ol>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://postimg.cc/0K6tbPF5"><img src="https://i.postimg.cc/2yGg95xW/image.png" alt="image.png"></a><br>  4. 结构控制</p>
+
+    </div>
+
+    
+    
+    
+
+     
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安然
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/02/19/QCM/2023-02-20-uml/" title="">http://example.com/2023/02/19/QCM/2023-02-20-uml/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/19/GPU/2023-02-19-5_%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/19/QCM/2023-02-20-sql/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E8%A7%86%E5%9B%BE"><span class="nav-number">1.</span> <span class="nav-text">不同视图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E5%9B%BE%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">不同图的分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8%E4%BE%8B%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">用例图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%81%E8%A3%85%E5%9B%BE"><span class="nav-number">4.</span> <span class="nav-text">封装图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%9B%BE"><span class="nav-number">5.</span> <span class="nav-text">类图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E8%81%94%E5%85%B3%E7%B3%BB"><span class="nav-number">5.1.</span> <span class="nav-text">类之间的关联关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E8%81%94%E7%9A%84%E7%BA%A6%E6%9D%9F"><span class="nav-number">5.2.</span> <span class="nav-text">关联的约束</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%9B%BE"><span class="nav-number">6.</span> <span class="nav-text">对象图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%9B%BE%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%9B%BE%E5%AF%B9%E6%AF%94"><span class="nav-number">6.1.</span> <span class="nav-text">类图与对象图对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="nav-number">7.</span> <span class="nav-text">时序图</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="安然"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">安然</p>
+  <div class="site-description" itemprop="description">随手写点什么</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JeanneSHen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;JeanneSHen" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:shenanran1114@gmail.com" title="E-Mail → mailto:shenanran1114@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; Wed Sep 21 2022 02:00:00 GMT+0200 (中欧夏令时间) – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安然</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不算子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

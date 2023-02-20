@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/stich-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/picaso-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="CM2Warp和Zero-overhead线程调度 1. Warp1.0 Scalability (invisible)可拓展性和不可见 Chaque bloc peut s’exécuter dans n’importe quel ordre par rapport aux autres. 每个bloc可以以相对于其他bloc以任何顺序运行。&#x3D;&#x3D;&gt;块与块间的执行不受影响">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day Day Up">
+<meta property="og:url" content="http://example.com/2023/02/19/GPU/2023-02-19-3_Wraps/index.html">
+<meta property="og:site_name" content="Day Day Up">
+<meta property="og:description" content="CM2Warp和Zero-overhead线程调度 1. Warp1.0 Scalability (invisible)可拓展性和不可见 Chaque bloc peut s’exécuter dans n’importe quel ordre par rapport aux autres. 每个bloc可以以相对于其他bloc以任何顺序运行。&#x3D;&#x3D;&gt;块与块间的执行不受影响">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20230108/yaimage.1aj6n7p8mqps.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20230108/yaimage.20awui5okaf4.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20230108/yaimage.31xkvxmijq00.png">
+<meta property="og:image" content="c:\Users\nili990221\AppData\Roaming\Typora\typora-user-images\image-20230109002338628.png">
+<meta property="og:image" content="c:\Users\nili990221\AppData\Roaming\Typora\typora-user-images\image-20230109002302967.png">
+<meta property="og:image" content="c:\Users\nili990221\AppData\Roaming\Typora\typora-user-images\image-20230109002324646.png">
+<meta property="article:published_time" content="2023-02-19T20:27:45.895Z">
+<meta property="article:modified_time" content="2023-02-19T20:51:35.873Z">
+<meta property="article:author" content="安然">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20230108/yaimage.1aj6n7p8mqps.png">
+
+<link rel="canonical" href="http://example.com/2023/02/19/GPU/2023-02-19-3_Wraps/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | Day Day Up</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Day Day Up</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/19/GPU/2023-02-19-3_Wraps/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="安然">
+      <meta itemprop="description" content="随手写点什么">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Day Day Up">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-02-19 21:27:45 / 修改时间：21:51:35" itemprop="dateCreated datePublished" datetime="2023-02-19T21:27:45+01:00">2023-02-19</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="CM2"><a href="#CM2" class="headerlink" title="CM2"></a>CM2</h1><p>Warp和Zero-overhead线程调度</p>
+<h1 id="1-Warp"><a href="#1-Warp" class="headerlink" title="1. Warp"></a>1. Warp</h1><h2 id="1-0-Scalability-invisible"><a href="#1-0-Scalability-invisible" class="headerlink" title="1.0 Scalability (invisible)"></a>1.0 Scalability (invisible)</h2><p>可拓展性和不可见</p>
+<p>Chaque bloc peut s’exécuter dans n’importe quel ordre par rapport aux autres. 每个bloc可以以相对于其他bloc以任何顺序运行。&#x3D;&#x3D;&gt;块与块间的执行不受影响？</p>
+<p>Le matériel est libre d’affecter des blocs à n’importe quel processeur à tout moment. 硬件可以在任何时候自由地将bloc分配给任何处理器。</p>
+<p>Un kernel s’adapte à n’importe quel nombre de processeurs parallèles.一个kernel适合任何数量的并行处理器。</p>
+<h2 id="1-1-Warp"><a href="#1-1-Warp" class="headerlink" title="1.1 Warp"></a>1.1 Warp</h2><h3 id="1-1-1-Unite-d’ordonnancement-Warp"><a href="#1-1-1-Unite-d’ordonnancement-Warp" class="headerlink" title="1.1.1 Unité d’ordonnancement : Warp"></a>1.1.1 Unité d’ordonnancement : Warp</h3><p>调度单元：Warp</p>
+<ul>
+<li>Chaque bloc est exécuté par un Warps de 32-threads (de valeurs consécutives[连续的] threadIdx : les thread 0 à 31 forment le premier warp, 32 à 63 le second, etc.)</li>
+<li>是SM里面的调度单元[ unités d’ordonnancement]<ul>
+<li>调度: 在计算机中是分配工作所需资源的方法。资源可以指虚拟的计算资源，如线程、进程或数据流；也可以指硬件资源，如处理器、网络连接或扩展卡。在操作系统中，调度程序是操作系统内核的组件，它选择进程在计算机处理器上的执行顺序</li>
+<li>SM:</li>
+</ul>
+</li>
+<li>在cuda编程里面没有实现</li>
+<li>一个warp线程是SIMD结构：Les threads d’un warp appliquent la <strong>même instruction</strong> à <strong>différentes parties des données</strong> et tous les threads d’un warp auront toujours le <strong>même temps d’exécution</strong>.</li>
+</ul>
+<p>Exemple de Warp</p>
+<p>Si 3 blocs sont attribués à un SM et que chaque bloc comporte 256 threads, combien de Warps y a-t-il dans un SM ?&#x3D;&#x3D;&gt;$256&#x2F;32*3&#x3D;24$</p>
+<h3 id="1-1-2-使用warp的好处"><a href="#1-1-2-使用warp的好处" class="headerlink" title="1.1.2 使用warp的好处"></a>1.1.2 使用warp的好处</h3><p>Permet d’exécuter efficacement <strong>les opérations avec des longues latences</strong>, comme les accès globaux à la mémoire (ou les instructions arithmétiques à virgule flottante, les branchements de pipeline, etc.) 允许有效地执行具有长延迟的操作，如全局内存访问（或浮点运算指令、流水线分支等）。</p>
+<ul>
+<li><p>Une instruction devant être exécutée par un warp qui doit attendre le résultat d’une opération avec une longue latence alors le warp n’est pas sélectionné pour l’exécution.</p>
+<p>一条要由warp执行的指令，必须等待具有长延迟的操作结果，那么该warp就不会被选择执行。</p>
+</li>
+<li><p>un autre warp qui n’attend plus de résultats sera sélectionné pour l’exécution.</p>
+<p> 另一个不再等待结果的warp将被选择执行。</p>
+</li>
+<li><p>si plus d’un warp est prêt à être exécuté, un mécanisme de priorité est utilisé pour en sélectionner un.</p>
+</li>
+</ul>
+<p>  如果有一个以上的warp准备被执行，则使用优先机制来选择其中一个。</p>
+<p>这种用其他线程的工作来填补操作的延迟的机制通常被称为 “延迟容忍 “或 “延迟隐藏”[ “latency tolerance” &#x2F; “latency hiding” ]</p>
+<h3 id="1-1-3-Ordonnancement-Zero-overhead-thread"><a href="#1-1-3-Ordonnancement-Zero-overhead-thread" class="headerlink" title="1.1.3 Ordonnancement Zero-overhead thread"></a>1.1.3 Ordonnancement Zero-overhead thread</h3><p>定义：如果有足够数量的warps，硬件就有可能在任何时候找到一个warps来执行，这允许在这些长延迟操作的情况下充分利用执行硬件。选择准备执行的warp可以避免在执行时间线上引入空闲或浪费的时间，这被称为零开销的线程调度[ l’ordonnancement Zero-overhead thread]。</p>
+<p>例子: Supposons qu’un device autorise[允许] jusqu’à 8 blocs et 1024 threads par SM et il permet jusqu’à 512 threads dans chaque bloc. Pour le traitement d’une image doit-on utiliser des blocs de 8×8, 16×16, ou 32×32 threads ?</p>
+<ul>
+<li>8*8 : 每个块中64个线程，需要1024&#x2F;64&#x3D;12个blocs，但每个SM只允许8个。</li>
+<li>16*16：每个块中256个线程，需要1024&#x2F;256&#x3D;4个blocs，正好。</li>
+<li>32*32：每个块中1024个线程超过512的限制了</li>
+</ul>
+<p>没有理解这个例子和零开销的线程调度的关系</p>
+<h1 id="2-Detour-sur-la-virgule-flottante"><a href="#2-Detour-sur-la-virgule-flottante" class="headerlink" title="2. Détour sur la virgule flottante"></a>2. Détour sur la virgule flottante</h1><h2 id="2-1-Le-format-标准-a-virgule-flottante"><a href="#2-1-Le-format-标准-a-virgule-flottante" class="headerlink" title="2.1  Le format[标准] à virgule flottante"></a>2.1  Le format[标准] à virgule flottante</h2><p>IEEE754-2008</p>
+<p>制定这个标准是为了：确保来自不同供应商的材料产生一致的结果</p>
+<p>二进制浮点数的组成:</p>
+<ul>
+<li>符号位<strong>S</strong>[0正1负]，指数<strong>E</strong>[大小，entier relatif, 通常有界]和尾数<strong>M</strong>[精度]</li>
+<li>$valeur &#x3D; (-1)^S·M·2^E\ \ \ 1.0&lt;&#x3D;M&lt;10.0_B$，比如说$0.5_D&#x3D;1.0_B·2^{-1}$. 由于所有的尾数都是1.XX…的形式，我们可以省略 “1. “部分（这被称为隐含位）。比如说上面的$0.5_D$的尾数可以表示成00</li>
+</ul>
+<h2 id="2-2-Representation-de-l’exposant"><a href="#2-2-Representation-de-l’exposant" class="headerlink" title="2.2 Représentation de l’exposant"></a>2.2 Représentation de l’exposant</h2><p><strong>负数：</strong>正数的反码+1，比如-4 sur 8 bits:</p>
+<p> <img src="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20230108/yaimage.1aj6n7p8mqps.png" alt="yaimage"></p>
+<ul>
+<li>-0就是0：$ 1111 1111_B + 1&#x3D;0000 0000_B$</li>
+<li>减法是正负的加<ul>
+<li>举得例子有点怪：$3+(-4)&#x3D;0011_B+1100_B&#x3D;1111_B&#x3D;-1$, 就是说-1的二进制表示实际是1111[不过确实1的反码加1]</li>
+</ul>
+</li>
+</ul>
+<p>Pour un exposant E de n bits[对于一个n位的指数E]，on ajoute $2^{n−1} − 1$à la représentation de <strong>son complément à 2[它的2进制补码]</strong> (exemple pour une représentation de l’exposant sur 3 bits) .</p>
+<ul>
+<li>二进制数系统中，每个0或1就是一个位(bit)，位是数据存储的最小单位</li>
+<li>补码：正数补码即原码，负数补码反码+1</li>
+</ul>
+<p>En général, avec une <strong>mantisse normalisée</strong> et un <strong>exposant codé en excès</strong>, la valeur d’un nombre avec un exposant de n bits est : $(−1)S · 1.M · 2^{ (E−(2^{(n−1)}−1))}$</p>
+<p><img src="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20230108/yaimage.20awui5okaf4.png" alt="yaimage"></p>
+<p>这个在说n&#x3D;3然后E[指数]都给加个011？</p>
+<p><strong>Exemple sur un format 5-bit flottant</strong></p>
+<p>Supposons un format avec 1bit pour S, 2 bits pour E et 2 bits pour M</p>
+<p>$0.5_D&#x3D;1.00_B*2^{-1}&#x3D;0 \ 00\ 00\ \ \ avec\ S&#x3D;0,E&#x3D;00,M&#x3D;(1.)00$</p>
+<p><img src="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20230108/yaimage.31xkvxmijq00.png" alt="yaimage"></p>
+<p>这里又不对了，01怎么对11哦</p>
+<h2 id="2-3-Nombres-representables"><a href="#2-3-Nombres-representables" class="headerlink" title="2.3 Nombres représentables"></a>2.3 Nombres représentables</h2><ol>
+<li><p>Nombres représentables en 5 bits<img src="C:\Users\nili990221\AppData\Roaming\Typora\typora-user-images\image-20230109002338628.png" alt="image-20230109002338628"></p>
+<ul>
+<li><strong>指数的位数</strong>[E的bits]定义了可表示数的主要区间。主要的间隔[intervalles]是在2的幂之间</li>
+<li><strong>尾数</strong>位定义了每个主要区间的代表数字的数量。因此，尾数的位数决定了表述的<strong>准确性</strong></li>
+<li>这是一个理想的趋势，因为这些数字的绝对值越小，准确表达它们就越重要</li>
+<li>可表示的数字的密度增加的趋势，以及在接近0时表示数字的准确性增加的趋势，在紧邻0的地方并不适用。</li>
+</ul>
+</li>
+<li><p>Mise à zéro</p>
+<p>删除了几个接近零的可表示数，并将它们全部分组为0.0</p>
+<p><img src="C:\Users\nili990221\AppData\Roaming\Typora\typora-user-images\image-20230109002302967.png" alt="image-20230109002302967"></p>
+</li>
+<li><p>Nombres dénormalisés</p>
+<p>放宽了对非常接近0的数字的归一化要求,当E &#x3D; 0时，尾数M不再被认为是形式1.XX但是是0.XX，值为$0.M*2^{-2^{(n-1)}+2}$<img src="C:\Users\nili990221\AppData\Roaming\Typora\typora-user-images\image-20230109002324646.png" alt="image-20230109002324646"></p>
+</li>
+</ol>
+<h2 id="2-4-精度"><a href="#2-4-精度" class="headerlink" title="2.4 精度"></a>2.4 精度</h2><p>分类：</p>
+<ul>
+<li><p>单精度：32位，1个符号位，8个指数位，23个尾数位</p>
+</li>
+<li><p>双精度：64位，1个符号位，11个指数位，52个尾数位。在双精度中，表示数字的最大误差减少到单精度表示的1&#x2F;229。</p>
+</li>
+</ul>
+<p>Arrondi</p>
+<ul>
+<li>浮点算术运算的精度是由该运算引入的最大误差来衡量的。</li>
+<li>浮点算术中最常见的错误来源是，该操作产生的结果不能精确表示，因此必须舍入[arrondi]</li>
+<li>当值的保持必须在太多的位上表示才能准确时，就会发生舍入[arrondi]</li>
+</ul>
+<p>我们假设一个5-bits的加法运算</p>
+<ul>
+<li>$1.00_B<em>2^{-2}+1.00_B</em>2^1$&#x3D;&#x3D;&#x3D;&gt;$(0,00,01)+(0,10,00)$ &#x3D;&#x3D;&gt;这个尾数咋回事？</li>
+<li>Le matériel doit décaler les bits de la mantisse pour les aligner[对齐]，对齐后为$0.001_B<em>2^1+1.00_B</em>2^1&#x3D;1.001_B*2^1$,这在尾数M的2-bits中无法表示</li>
+<li>最多只能表示成$1.00_B<em>2^1$或者是$1.01_B</em>2^1$,但都差很多</li>
+</ul>
+<p>浮点运算不是严格意义上的关联性[ strictement associatives]，主要原因是，有时一个小数字与一个非常大的数字相加或相减后会消失：(Grand + Petit) + Petit 6&#x3D; Grand + (Petit + Petit)，例子：$1.00_B\cdot2^0+1.00_B\cdot2^0+1.00_B\cdot2^{-2}+1.00_B\cdot2^{-2}$</p>
+<ul>
+<li><p>时序<br>$$<br>\begin{align*}\label{2}<br>&amp;1.00_B · 2^0 + 1.00_B · 2^0 + 1.00_B · 2^{−2} + 1.00_B · 2^{−2}\<br>&amp;&#x3D; 1.00_B · 2^1 + 1.00_B · 2^{−2} + 1.00_B · 2^{−2}\<br>&amp;&#x3D; 1.00_B · 2^1 + 1.00_B · 2^{−2}(arrondi)\<br>&amp;&#x3D; 1.00_B · 2^1(arrondi)\<br>\end{align*}<br>$$</p>
+</li>
+<li><p>并行<br>$$<br>\begin{align*}\label{1}<br>&amp;(1.00_B · 2^0 + 1.00_B · 2^0) + (1.00_B · 2^{−2} + 1.00_B · 2^{−2})\<br>&amp;&#x3D; 1.00_B · 2^1 + 1.00_B · 2^{−1}\<br>&amp;&#x3D; 1.01_B · 2^1<br>\end{align*}<br>$$</p>
+</li>
+</ul>
+<p>一个解决方法是对其进行预排序[pré-trier]，比如上面那个例子<br>$$<br>\begin{align*}\label{0}<br>&amp;1.00_B · 2^{−2} + 1.00_B · 2^{−2}+1.00_B · 2^0 + 1.00_B · 2^0\<br>&amp;&#x3D; 1.00_B · 2^{-1} + 1.00_B · 2^{0}+ 1.00_B · 2^{0}\<br>&amp;&#x3D; 1.10_B · 2^0+ 1.00_B · 2^{0}\<br>&amp;&#x3D;1.01_B\cdot2^1<br>\end{align*}<br>$$</p>
+
+    </div>
+
+    
+    
+    
+
+     
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安然
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/02/19/GPU/2023-02-19-3_Wraps/" title="">http://example.com/2023/02/19/GPU/2023-02-19-3_Wraps/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/19/GPU/2023-02-19-1_%E4%BB%8B%E7%BB%8D/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/19/GPU/2023-02-19-9_Stream/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CM2"><span class="nav-number">1.</span> <span class="nav-text">CM2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Warp"><span class="nav-number">2.</span> <span class="nav-text">1. Warp</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-0-Scalability-invisible"><span class="nav-number">2.1.</span> <span class="nav-text">1.0 Scalability (invisible)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-Warp"><span class="nav-number">2.2.</span> <span class="nav-text">1.1 Warp</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-Unite-d%E2%80%99ordonnancement-Warp"><span class="nav-number">2.2.1.</span> <span class="nav-text">1.1.1 Unité d’ordonnancement : Warp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-%E4%BD%BF%E7%94%A8warp%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="nav-number">2.2.2.</span> <span class="nav-text">1.1.2 使用warp的好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-3-Ordonnancement-Zero-overhead-thread"><span class="nav-number">2.2.3.</span> <span class="nav-text">1.1.3 Ordonnancement Zero-overhead thread</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Detour-sur-la-virgule-flottante"><span class="nav-number">3.</span> <span class="nav-text">2. Détour sur la virgule flottante</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Le-format-%E6%A0%87%E5%87%86-a-virgule-flottante"><span class="nav-number">3.1.</span> <span class="nav-text">2.1  Le format[标准] à virgule flottante</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Representation-de-l%E2%80%99exposant"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 Représentation de l’exposant</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-Nombres-representables"><span class="nav-number">3.3.</span> <span class="nav-text">2.3 Nombres représentables</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E7%B2%BE%E5%BA%A6"><span class="nav-number">3.4.</span> <span class="nav-text">2.4 精度</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="安然"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">安然</p>
+  <div class="site-description" itemprop="description">随手写点什么</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JeanneSHen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;JeanneSHen" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:shenanran1114@gmail.com" title="E-Mail → mailto:shenanran1114@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; Wed Sep 21 2022 02:00:00 GMT+0200 (中欧夏令时间) – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安然</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不算子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

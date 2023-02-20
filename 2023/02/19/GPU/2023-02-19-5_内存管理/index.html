@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/stich-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/picaso-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="CM7 内存管理 内存等级： 兆字节(mégaoctet)的易失性高速缓存：快速且昂贵 千兆字节(gigaoctet)的易失性存储器访问：快速和平均价格 太字节(teraoctet)的非易失性大容量存储：缓慢且廉价    内存管理器是操作系统的实体，它管理内存层次结构以及它们之间的协调。  内存结构与代码联系  地址空间：  地址空间是内存中可供程序或进程使用的有效地址范围，即它是程序或进程可以访">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day Day Up">
+<meta property="og:url" content="http://example.com/2023/02/19/GPU/2023-02-19-5_%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="Day Day Up">
+<meta property="og:description" content="CM7 内存管理 内存等级： 兆字节(mégaoctet)的易失性高速缓存：快速且昂贵 千兆字节(gigaoctet)的易失性存储器访问：快速和平均价格 太字节(teraoctet)的非易失性大容量存储：缓慢且廉价    内存管理器是操作系统的实体，它管理内存层次结构以及它们之间的协调。  内存结构与代码联系  地址空间：  地址空间是内存中可供程序或进程使用的有效地址范围，即它是程序或进程可以访">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.postimg.cc/wBTfP3L9/image.png">
+<meta property="og:image" content="https://i.postimg.cc/vTM6qxxz/image.png">
+<meta property="article:published_time" content="2023-02-19T21:52:55.077Z">
+<meta property="article:modified_time" content="2023-02-19T22:05:26.871Z">
+<meta property="article:author" content="安然">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.postimg.cc/wBTfP3L9/image.png">
+
+<link rel="canonical" href="http://example.com/2023/02/19/GPU/2023-02-19-5_%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | Day Day Up</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Day Day Up</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/19/GPU/2023-02-19-5_%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="安然">
+      <meta itemprop="description" content="随手写点什么">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Day Day Up">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-02-19 22:52:55 / 修改时间：23:05:26" itemprop="dateCreated datePublished" datetime="2023-02-19T22:52:55+01:00">2023-02-19</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="CM7-内存管理"><a href="#CM7-内存管理" class="headerlink" title="CM7 内存管理"></a>CM7 内存管理</h2><ul>
+<li>内存等级：<ul>
+<li>兆字节(mégaoctet)的易失性高速缓存：快速且昂贵</li>
+<li>千兆字节(gigaoctet)的易失性存储器访问：快速和平均价格</li>
+<li>太字节(teraoctet)的非易失性大容量存储：缓慢且廉价</li>
+</ul>
+</li>
+</ul>
+<p><strong>内存管理器</strong>是操作系统的实体，它管理内存层次结构以及它们之间的协调。</p>
+<ul>
+<li><p>内存结构与代码联系<br><a target="_blank" rel="noopener" href="https://postimg.cc/fVpfSz8P"><img src="https://i.postimg.cc/wBTfP3L9/image.png" alt="image.png"></a></p>
+</li>
+<li><p>地址空间：</p>
+<ul>
+<li>地址空间是内存中可供程序或进程使用的有效地址范围，即它是程序或进程可以访问的内存。</li>
+<li>每个程序都有自己的空间，因此一个程序的地址 42 与另一个程序的地址 42 对应于不同的内存位置。</li>
+<li>地址空间是程序使用的内存的一种抽象</li>
+</ul>
+</li>
+<li><p>动态重新分配</p>
+<ul>
+<li>添加了两个寄存器：基址寄存器和限制寄存器。</li>
+<li>在运行时，操作系统将程序开始和结束的物理地址加载到这两个寄存器中。</li>
+<li>我们将基地址添加到所有内存引用中（并检查该地址是否低于限制地址）。<blockquote>
+<p>默认：需要进行加法和比较两个操作. (比较速度快，但是加法速度慢-因为有进位)</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>如果物理内存不足以容纳所有进程怎么办？</p>
+<ul>
+<li>va-et-vient (swapping)<ul>
+<li>预留额外的内存(tas et pile)</li>
+<li>内存压缩技术（很少使用）</li>
+<li>空闲内存管理：结构（表格，列表）和算法</li>
+</ul>
+</li>
+<li>mémoire virtuelle<ul>
+<li>每个程序都有自己的地址空间，分为小实体，les pages</li>
+<li>页面被映射到物理内存，但不一定所有页面都可以运行程序</li>
+<li>虚拟寻址和物理寻址之间的对应是由硬件（内存管理单元，<strong>MMU</strong>）即时完成的</li>
+<li>如果页面未被引用，操作系统将加载丢失的空间</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>页码(Pagination)</p>
+<ul>
+<li>虚拟地址空间分为页面</li>
+<li>物理内存中相应的单元称为页框。</li>
+<li>页面和框架大小相同（示例中为 4kb）</li>
+<li>RAM 和磁盘之间的传输总是整页<br><a target="_blank" rel="noopener" href="https://postimg.cc/gXSJrJDX"><img src="https://i.postimg.cc/vTM6qxxz/image.png" alt="image.png"></a></li>
+</ul>
+</li>
+<li><p>页面置换的算法</p>
+<p>选择不常用的页面框架；写入所选帧的磁盘；将新引用的页面转移到释放的框架中；修改页表；继续操作</p>
+</li>
+<li><p>转换后备缓冲区(TLB)</p>
+<ul>
+<li>问题：页面匹配需要快速并且是性能限制</li>
+<li>观察：程序访问少量页面</li>
+<li>应用：MMU 的本地内存，带有一个小型查找表（Translation Lookaside Buffer，TLB）。TLB 记住与处理器必须访问的最后一页相对应的最后对（页、帧），这大大提高了内存访问时间</li>
+</ul>
+</li>
+</ul>
+<h3 id="CPU-GPU内存传递"><a href="#CPU-GPU内存传递" class="headerlink" title="CPU-GPU内存传递"></a>CPU-GPU内存传递</h3><p>对 cudaMemcpy() 的调用使用直接内存访问 (DMA) 硬件单元以提高效率。</p>
+<ul>
+<li>DMA使用物理内存：在每次 DMA 传输开始时，对所有源和目标区域的页面进行地址转换并检查是否存在。同一DMA传输的其余部分不进行地址转换，从而效率高。<blockquote>
+<p>操作系统可能会意外删除 DMA 读取或写入的数据，并在同一物理位置插入另一个虚拟页面。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="固定内存的使用-Pinned"><a href="#固定内存的使用-Pinned" class="headerlink" title="固定内存的使用(Pinned)"></a>固定内存的使用(Pinned)</h3><p>cudaMemcpy() 使用的 DMA 要求将主机内存中的任何源或目标分配为固定内存。</p>
+<ul>
+<li>固定内存(Pinned)&#x2F;Page Locked Memory&#x2F;Lock Pages<ul>
+<li>固定内存由标记为无法调出的虚拟内存页组成；通过特殊系统API函数调用分配</li>
+<li>作为 DMA 传输源或目标的 CPU 内存必须分配为固定内存</li>
+<li>调用 cudaMemcpy() 时，如果主机内存中的源或目标未分配到固定内存中，则必须首先将其复制到固定内存（额外开销）</li>
+<li>如果主机内存源或目标是在固定内存中分配的，则 cudaMemcpy() 会更快，因为不需要额外的副本。</li>
+</ul>
+</li>
+<li>在CUDA中使用固定内存<ul>
+<li>cudaHostAlloc()：指向已分配内存的指针地址(&amp;A)；分配的内存大小(以字节为单位)；使用cudaHoatAllocDefault选项</li>
+<li>以与 malloc() 和 free() 返回的方式相同的方式使用在主机上分配的内存及其指针，唯一的区别是分配的内存不能被操作系统调出</li>
+<li>cudaMemcpy() 函数在固定内存的情况下应该快大约 2 倍<blockquote>
+<p>固定内存是一种有限的资源。 过度使用会产生严重的后果。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="统一内存-Unified-Memory"><a href="#统一内存-Unified-Memory" class="headerlink" title="统一内存 Unified Memory"></a>统一内存 Unified Memory</h3><p>统一内存在 CUDA 6.0 中首次引入。它是一个公共内存空间，主机和设备将其视为具有公共地址空间的单个内存。</p>
+<p>硬件&#x2F;软件自动处理主机和设备之间的数据迁移，保持它们之间的一致性，而无需进行显式内存复制调用（消除对 cudaMemcpy 例程的调用）</p>
+<p>统一内存允许：通过以一致的方式统一内存空间来简化 GPU 编程；通过将数据透明地迁移到使用它的处理器来最大化数据访问速度。</p>
+<ul>
+<li>系统要求：GPU框架3.0或更高；64位的主机和合适的操作系统</li>
+<li>使用：不再需要主机和设备之间的显式内存传输。在内存空间中创建的任何分配都会自动迁移到需要的地方。<ul>
+<li>程序按以下两种方式分配内存：<ul>
+<li>通过<code>cudaMallocManaged()</code>,相似于<code>cudamalloc</code></li>
+<li>通过定义全局变量<code>__managed__</code>,在语义上类似于<code>__device__</code><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">__global__</span><br><span class="line"><span class="type">void</span> <span class="title function_">AplusB</span> <span class="params">( <span class="type">int</span> *ret , <span class="type">int</span> a, <span class="type">int</span> b)</span> &#123;</span><br><span class="line">    ret [ threadIdx .x] = a + b + threadIdx .x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span> <span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> *ret ;</span><br><span class="line">    cudaMalloc(&amp; ret,<span class="number">1000</span>*<span class="keyword">sizeof</span>(<span class="type">int</span>));</span><br><span class="line">    AplusB &lt;&lt;&lt;<span class="number">1</span>,<span class="number">1000</span>&gt;&gt;&gt;(ret,<span class="number">10</span>,<span class="number">100</span>) ;</span><br><span class="line">    <span class="type">int</span> * host_ret=(<span class="type">int</span>*)<span class="built_in">malloc</span>(<span class="number">1000</span>*<span class="keyword">sizeof</span>(<span class="type">int</span>));</span><br><span class="line">    cudaMemcpy(host_ret,ret,<span class="number">1000</span>*<span class="keyword">sizeof</span> (<span class="type">int</span> ),cudaMemcpyDefault);</span><br><span class="line">    <span class="keyword">for</span> ( <span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++)</span><br><span class="line">        <span class="built_in">printf</span> (<span class="string">&quot;%d: A+B = %d\n&quot;</span>, i, host_ret [i]) ;</span><br><span class="line">    <span class="built_in">free</span> ( host_ret ) ;</span><br><span class="line">    cudaFree (ret );</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">__global__</span><br><span class="line"><span class="type">void</span> <span class="title function_">AplusB</span> <span class="params">( <span class="type">int</span> *ret , <span class="type">int</span> a, <span class="type">int</span> b)</span> &#123;</span><br><span class="line">    ret [ threadIdx .x] = a + b + threadIdx .x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span> <span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> *ret ;</span><br><span class="line">    cudaMallocManaged(&amp;&amp; ret,<span class="number">1000</span>*<span class="keyword">sizeof</span>(<span class="type">int</span>));</span><br><span class="line">    AplusB&lt;&lt;&lt;<span class="number">1</span>,<span class="number">1000</span>&gt;&gt;&gt;(ret,<span class="number">10</span>,<span class="number">100</span>);</span><br><span class="line">    cudaDeviceSynchronize();</span><br><span class="line">    <span class="keyword">for</span> ( <span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++)</span><br><span class="line">        <span class="built_in">printf</span> (<span class="string">&quot;%d: A+B = %d\n&quot;</span>, i, ret [i]) ;</span><br><span class="line">    cudaFree (ret );</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>cudaMallocManaged()</code> 例程为主机代码和设备代码返回一个有效指针。 这允许在没有单独的 host_ret 副本的情况下使用 ret，从而简化并减小了程序的大小</li>
+<li>在非统一示例中，<code>cudaMemcpy()</code>例程既用于同步内核（即等待它完成运行），也用于将数据传输到主机。 因此，在主机程序可以安全地使用 GPU 输出之前，使用统一内存需要一个显式的 <code>cudaDeviceSynchronize()</code>。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">__device__ __managed__ <span class="type">int</span> ret [<span class="number">1000</span>];</span><br><span class="line">__global__</span><br><span class="line"><span class="type">void</span> <span class="title function_">AplusB</span> <span class="params">( <span class="type">int</span> a, <span class="type">int</span> b)</span> &#123;</span><br><span class="line">ret [ threadIdx .x] = a + b + threadIdx .x;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span> <span class="params">()</span> &#123;</span><br><span class="line">    AplusB&lt;&lt;&lt;<span class="number">1</span>,<span class="number">1000</span>&gt;&gt;&gt;(ret,<span class="number">10</span>,<span class="number">100</span>);</span><br><span class="line">    cudaDeviceSynchronize();</span><br><span class="line">    <span class="keyword">for</span> ( <span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++)</span><br><span class="line">        <span class="built_in">printf</span> (<span class="string">&quot;%d: A+B = %d\n&quot;</span>, i, ret [i]) ;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>使用全局变量时进一步简化程序。</li>
+<li>缺少 cudaMemcpy() 调用和 ret 返回数组在 CPU 和 GPU 上都是可见的。</li>
+</ul>
+<h3 id="数据迁移和一致性"><a href="#数据迁移和一致性" class="headerlink" title="数据迁移和一致性"></a>数据迁移和一致性</h3><ul>
+<li>统一内存尝试通过将数据移动到主机内存（如果被 CPU 访问）和设备内存（如果被 GPU 访问）来优化内存性能</li>
+<li>数据迁移对程序是透明的。 系统尝试将数据放在访问效率最高的地方，而不违反一致性</li>
+<li>数据的物理位置对程序来说是不可见的，并且可以随时更改，但是对数据虚拟地址的访问将保持有效并从任何处理器保持一致，无论位置如何。 在性能之前，一致性是主要要求</li>
+<li>计算能力低于 6.x 的 GPU 架构不支持按需将托管数据精细移动到 GPU。 每当启动 GPU 内核时，通常需要将所有托管内存转移到 GPU 内存中，以避免内存访问错误</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+     
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安然
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/02/19/GPU/2023-02-19-5_%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" title="">http://example.com/2023/02/19/GPU/2023-02-19-5_内存管理/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/19/GPU/2023-02-19-6_%E5%90%88%E5%B9%B6%E5%86%85%E5%AD%98/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/19/QCM/2023-02-20-uml/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CM7-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">CM7 内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU-GPU%E5%86%85%E5%AD%98%E4%BC%A0%E9%80%92"><span class="nav-number">1.1.</span> <span class="nav-text">CPU-GPU内存传递</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BA%E5%AE%9A%E5%86%85%E5%AD%98%E7%9A%84%E4%BD%BF%E7%94%A8-Pinned"><span class="nav-number">1.2.</span> <span class="nav-text">固定内存的使用(Pinned)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E4%B8%80%E5%86%85%E5%AD%98-Unified-Memory"><span class="nav-number">1.3.</span> <span class="nav-text">统一内存 Unified Memory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB%E5%92%8C%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">1.4.</span> <span class="nav-text">数据迁移和一致性</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="安然"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">安然</p>
+  <div class="site-description" itemprop="description">随手写点什么</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JeanneSHen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;JeanneSHen" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:shenanran1114@gmail.com" title="E-Mail → mailto:shenanran1114@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; Wed Sep 21 2022 02:00:00 GMT+0200 (中欧夏令时间) – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安然</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不算子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
