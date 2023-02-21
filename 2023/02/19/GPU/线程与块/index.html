@@ -19,13 +19,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="作者：nililili（nililili7876.cn） Allocation des données et exécution d’un kernel正常的一个C 12345678&#x2F;&#x2F; Compute vector sum C &#x3D; A + Bvoid vecAdd ( float * h_A , float *h_B , float * h_C , int n)&amp;#123;	int i;	for">
 <meta property="og:type" content="article">
-<meta property="og:title" content="1.线程与块">
-<meta property="og:url" content="http://example.com/2023/02/19/GPU/2023-02-19-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%9D%97/index.html">
+<meta property="og:title" content="线程与块">
+<meta property="og:url" content="http://example.com/2023/02/19/GPU/%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%9D%97/index.html">
 <meta property="og:site_name" content="Day Day Up">
 <meta property="og:description" content="作者：nililili（nililili7876.cn） Allocation des données et exécution d’un kernel正常的一个C 12345678&#x2F;&#x2F; Compute vector sum C &#x3D; A + Bvoid vecAdd ( float * h_A , float *h_B , float * h_C , int n)&amp;#123;	int i;	for">
 <meta property="og:locale" content="zh_CN">
@@ -36,12 +36,12 @@
 <meta property="og:image" content="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20230108/yaimage.63d4i06rs9w0.png">
 <meta property="og:image" content="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20230108/yaimage.7v02me85gw8.png">
 <meta property="article:published_time" content="2023-02-19T20:27:40.695Z">
-<meta property="article:modified_time" content="2023-02-21T00:29:28.353Z">
+<meta property="article:modified_time" content="2023-02-21T00:48:43.611Z">
 <meta property="article:author" content="安然">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20221214/yaimage.15484o9dwdpc.png">
 
-<link rel="canonical" href="http://example.com/2023/02/19/GPU/2023-02-19-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%9D%97/">
+<link rel="canonical" href="http://example.com/2023/02/19/GPU/%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%9D%97/">
 
 
 <script id="page-configurations">
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title>1.线程与块 | Day Day Up</title>
+  <title>线程与块 | Day Day Up</title>
   
 
 
@@ -174,7 +174,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/19/GPU/2023-02-19-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%9D%97/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/19/GPU/%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%9D%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -187,7 +187,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          1.线程与块
+          线程与块
         </h1>
 
         <div class="post-meta">
@@ -204,7 +204,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-21 01:29:28" itemprop="dateModified" datetime="2023-02-21T01:29:28+01:00">2023-02-21</time>
+                <time title="修改时间：2023-02-21 01:48:43" itemprop="dateModified" datetime="2023-02-21T01:48:43+01:00">2023-02-21</time>
               </span>
 
           
@@ -306,7 +306,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://example.com/2023/02/19/GPU/2023-02-19-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%9D%97/" title="1.线程与块">http://example.com/2023/02/19/GPU/2023-02-19-线程与块/</a>
+    <a href="http://example.com/2023/02/19/GPU/%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%9D%97/" title="线程与块">http://example.com/2023/02/19/GPU/线程与块/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -323,12 +323,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/02/19/GPU/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E4%B8%8E%E5%90%8C%E6%AD%A5/" rel="prev" title="3.共享内存和同步">
-      <i class="fa fa-chevron-left"></i> 3.共享内存和同步
+    <a href="/2023/02/19/GPU/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E4%B8%8E%E5%90%8C%E6%AD%A5/" rel="prev" title="共享内存和同步">
+      <i class="fa fa-chevron-left"></i> 共享内存和同步
     </a></div>
       <div class="post-nav-item">
-    <a href="/2023/02/19/GPU/%E4%BB%8B%E7%BB%8D/" rel="next" title="0.课程安排和GPU基本知识介绍">
-      0.课程安排和GPU基本知识介绍 <i class="fa fa-chevron-right"></i>
+    <a href="/2023/02/19/GPU/%E4%BB%8B%E7%BB%8D/" rel="next" title="课程安排和GPU基本知识介绍">
+      课程安排和GPU基本知识介绍 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
