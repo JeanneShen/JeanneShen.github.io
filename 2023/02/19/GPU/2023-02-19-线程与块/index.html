@@ -22,12 +22,12 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="一维向量的加和多维的kernel处理作者：nililili（nililili7876.cn） Allocation des données et exécution d’un kernel正常的一个C 12345678&#x2F;&#x2F; Compute vector sum C &#x3D; A + Bvoid vecAdd ( float * h_A , float *h_B , float * h_C , int n">
+  <meta name="description" content="title:1.线程与块作者：nililili（nililili7876.cn） Allocation des données et exécution d’un kernel正常的一个C 12345678&#x2F;&#x2F; Compute vector sum C &#x3D; A + Bvoid vecAdd ( float * h_A , float *h_B , float * h_C , int n)&amp;#12">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Day Day Up">
 <meta property="og:url" content="http://example.com/2023/02/19/GPU/2023-02-19-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%9D%97/index.html">
 <meta property="og:site_name" content="Day Day Up">
-<meta property="og:description" content="一维向量的加和多维的kernel处理作者：nililili（nililili7876.cn） Allocation des données et exécution d’un kernel正常的一个C 12345678&#x2F;&#x2F; Compute vector sum C &#x3D; A + Bvoid vecAdd ( float * h_A , float *h_B , float * h_C , int n">
+<meta property="og:description" content="title:1.线程与块作者：nililili（nililili7876.cn） Allocation des données et exécution d’un kernel正常的一个C 12345678&#x2F;&#x2F; Compute vector sum C &#x3D; A + Bvoid vecAdd ( float * h_A , float *h_B , float * h_C , int n)&amp;#12">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20221214/yaimage.15484o9dwdpc.png">
 <meta property="og:image" content="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20221214/yaimage.5671ve9tpn40.png">
@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20230108/yaimage.63d4i06rs9w0.png">
 <meta property="og:image" content="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20230108/yaimage.7v02me85gw8.png">
 <meta property="article:published_time" content="2023-02-19T20:27:40.695Z">
-<meta property="article:modified_time" content="2023-02-19T21:00:55.418Z">
+<meta property="article:modified_time" content="2023-02-21T00:15:43.116Z">
 <meta property="article:author" content="安然">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.staticaly.com/gh/nililili7876/blog_pic@main/20221214/yaimage.15484o9dwdpc.png">
@@ -196,10 +196,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2023-02-19 21:27:40 / 修改时间：22:00:55" itemprop="dateCreated datePublished" datetime="2023-02-19T21:27:40+01:00">2023-02-19</time>
+              <time title="创建时间：2023-02-19 21:27:40" itemprop="dateCreated datePublished" datetime="2023-02-19T21:27:40+01:00">2023-02-19</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-21 01:15:43" itemprop="dateModified" datetime="2023-02-21T01:15:43+01:00">2023-02-21</time>
+              </span>
 
           
             <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
@@ -219,7 +225,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="一维向量的加和多维的kernel处理"><a href="#一维向量的加和多维的kernel处理" class="headerlink" title="一维向量的加和多维的kernel处理"></a>一维向量的加和多维的kernel处理</h1><p>作者：nililili（nililili7876.cn）</p>
+        <hr>
+<h2 id="title-1-线程与块"><a href="#title-1-线程与块" class="headerlink" title="title:1.线程与块"></a>title:1.线程与块</h2><p>作者：nililili（nililili7876.cn）</p>
 <h2 id="Allocation-des-donnees-et-execution-d’un-kernel"><a href="#Allocation-des-donnees-et-execution-d’un-kernel" class="headerlink" title="Allocation des données et exécution d’un kernel"></a>Allocation des données et exécution d’un kernel</h2><p>正常的一个C</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Compute vector sum C = A + B</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">vecAdd</span> <span class="params">( <span class="type">float</span> * h_A , <span class="type">float</span> *h_B , <span class="type">float</span> * h_C , <span class="type">int</span> n)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> i;</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i&lt;n; i ++) &#123;</span><br><span class="line">		h_C [i] = h_A [i] + h_B [i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -382,7 +389,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E7%BB%B4%E5%90%91%E9%87%8F%E7%9A%84%E5%8A%A0%E5%92%8C%E5%A4%9A%E7%BB%B4%E7%9A%84kernel%E5%A4%84%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">一维向量的加和多维的kernel处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Allocation-des-donnees-et-execution-d%E2%80%99un-kernel"><span class="nav-number">1.1.</span> <span class="nav-text">Allocation des données et exécution d’un kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kernel"><span class="nav-number">1.1.1.</span> <span class="nav-text">Kernel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Key-words"><span class="nav-number">1.1.2.</span> <span class="nav-text">Key words</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#blockIdx"><span class="nav-number">1.1.3.</span> <span class="nav-text">blockIdx</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multidim"><span class="nav-number">1.2.</span> <span class="nav-text">Multidim</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pseudo-algo-CPU"><span class="nav-number">1.2.1.</span> <span class="nav-text">Pseudo-algo CPU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kernel-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">Kernel</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#title-1-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%9D%97"><span class="nav-number">1.</span> <span class="nav-text">title:1.线程与块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Allocation-des-donnees-et-execution-d%E2%80%99un-kernel"><span class="nav-number">2.</span> <span class="nav-text">Allocation des données et exécution d’un kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kernel"><span class="nav-number">2.1.</span> <span class="nav-text">Kernel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Key-words"><span class="nav-number">2.2.</span> <span class="nav-text">Key words</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#blockIdx"><span class="nav-number">2.3.</span> <span class="nav-text">blockIdx</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multidim"><span class="nav-number">3.</span> <span class="nav-text">Multidim</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pseudo-algo-CPU"><span class="nav-number">3.1.</span> <span class="nav-text">Pseudo-algo CPU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kernel-1"><span class="nav-number">3.2.</span> <span class="nav-text">Kernel</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
