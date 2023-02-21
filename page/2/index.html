@@ -178,7 +178,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/02/19/GPU/2023-02-19-Stream/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2023/02/19/GPU/2023-02-19-Stream/" class="post-title-link" itemprop="url">9.Stream</a>
         </h2>
 
         <div class="post-meta">
@@ -195,7 +195,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-21 01:18:14" itemprop="dateModified" datetime="2023-02-21T01:18:14+01:00">2023-02-21</time>
+                <time title="修改时间：2023-02-21 01:29:37" itemprop="dateModified" datetime="2023-02-21T01:29:37+01:00">2023-02-21</time>
               </span>
 
           
@@ -209,8 +209,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <hr>
-<h2 id="title-9-Stream"><a href="#title-9-Stream" class="headerlink" title="title:9.Stream"></a>title:9.Stream</h2><ul>
+          <ul>
 <li><code>cudaMemcpy</code>顺序化数据传输和GPU计算：数据传输时，单向使用，GPU inactif状态；GPU计算是，CPU处于未激活状态</li>
 <li>一些cuda设备允许在设备和主机之间复制数据的同时执行内核(<em>Overlap</em>)<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">int dev_count;</span><br><span class="line">cudaDeviceProp prop ;</span><br><span class="line">cudaGetDeviceCount (&amp;dev_count );</span><br><span class="line">for (int i = 0; i &lt; dev_count ; i ++) &#123;</span><br><span class="line">    cudaGetDeviceProperties (&amp; prop , i);</span><br><span class="line">     if (prop.deviceOverlap)  // 查看是否允许同时运行CPU和GPU</span><br><span class="line">     ...</span><br></pre></td></tr></table></figure></li>
 <li>在<em>pipeline</em>中运行<ul>
@@ -296,7 +295,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/02/19/GPU/2023-02-19-Wraps/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2023/02/19/GPU/2023-02-19-Wraps/" class="post-title-link" itemprop="url">7.Wraps</a>
         </h2>
 
         <div class="post-meta">
@@ -313,7 +312,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-21 01:17:49" itemprop="dateModified" datetime="2023-02-21T01:17:49+01:00">2023-02-21</time>
+                <time title="修改时间：2023-02-21 01:29:41" itemprop="dateModified" datetime="2023-02-21T01:29:41+01:00">2023-02-21</time>
               </span>
 
           
@@ -327,8 +326,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <hr>
-<h2 id="title-7-Wraps"><a href="#title-7-Wraps" class="headerlink" title="title:7.Wraps"></a>title:7.Wraps</h2><p>Warp和Zero-overhead线程调度</p>
+          <p>Warp和Zero-overhead线程调度</p>
 <h1 id="1-Warp"><a href="#1-Warp" class="headerlink" title="1. Warp"></a>1. Warp</h1><h2 id="1-0-Scalability-invisible"><a href="#1-0-Scalability-invisible" class="headerlink" title="1.0 Scalability (invisible)"></a>1.0 Scalability (invisible)</h2><p>可拓展性和不可见</p>
 <p>Chaque bloc peut s’exécuter dans n’importe quel ordre par rapport aux autres. 每个bloc可以以相对于其他bloc以任何顺序运行。&#x3D;&#x3D;&gt;块与块间的执行不受影响？</p>
 <p>Le matériel est libre d’affecter des blocs à n’importe quel processeur à tout moment. 硬件可以在任何时候自由地将bloc分配给任何处理器。</p>
@@ -475,7 +473,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/02/19/GPU/2023-02-19-%E4%BB%8B%E7%BB%8D/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2023/02/19/GPU/2023-02-19-%E4%BB%8B%E7%BB%8D/" class="post-title-link" itemprop="url">0.课程安排和GPU基本知识介绍</a>
         </h2>
 
         <div class="post-meta">
@@ -492,7 +490,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-21 01:15:38" itemprop="dateModified" datetime="2023-02-21T01:15:38+01:00">2023-02-21</time>
+                <time title="修改时间：2023-02-21 01:29:15" itemprop="dateModified" datetime="2023-02-21T01:29:15+01:00">2023-02-21</time>
               </span>
 
           
@@ -506,8 +504,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <hr>
-<h2 id="title-0-课程安排和GPU基本知识介绍"><a href="#title-0-课程安排和GPU基本知识介绍" class="headerlink" title="title:0.课程安排和GPU基本知识介绍"></a>title:0.课程安排和GPU基本知识介绍</h2><p>作者：nililili（nililili7876.cn）</p>
+          <p>作者：nililili（nililili7876.cn）</p>
 <h2 id="课程安排"><a href="#课程安排" class="headerlink" title="课程安排"></a>课程安排</h2><p>Généralités sur la programmation sur GPU</p>
 <ul>
 <li>programmation concurrente vs parallèle<ul>
@@ -615,7 +612,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/02/19/GPU/2023-02-19-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%9D%97/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2023/02/19/GPU/2023-02-19-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%9D%97/" class="post-title-link" itemprop="url">1.线程与块</a>
         </h2>
 
         <div class="post-meta">
@@ -632,7 +629,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-21 01:15:43" itemprop="dateModified" datetime="2023-02-21T01:15:43+01:00">2023-02-21</time>
+                <time title="修改时间：2023-02-21 01:29:28" itemprop="dateModified" datetime="2023-02-21T01:29:28+01:00">2023-02-21</time>
               </span>
 
           
@@ -646,8 +643,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <hr>
-<h2 id="title-1-线程与块"><a href="#title-1-线程与块" class="headerlink" title="title:1.线程与块"></a>title:1.线程与块</h2><p>作者：nililili（nililili7876.cn）</p>
+          <p>作者：nililili（nililili7876.cn）</p>
 <h2 id="Allocation-des-donnees-et-execution-d’un-kernel"><a href="#Allocation-des-donnees-et-execution-d’un-kernel" class="headerlink" title="Allocation des données et exécution d’un kernel"></a>Allocation des données et exécution d’un kernel</h2><p>正常的一个C</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Compute vector sum C = A + B</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">vecAdd</span> <span class="params">( <span class="type">float</span> * h_A , <span class="type">float</span> *h_B , <span class="type">float</span> * h_C , <span class="type">int</span> n)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> i;</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i&lt;n; i ++) &#123;</span><br><span class="line">		h_C [i] = h_A [i] + h_B [i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -746,7 +742,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/02/19/GPU/2023-02-19-%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E4%B8%8E%E5%90%8C%E6%AD%A5/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2023/02/19/GPU/2023-02-19-%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E4%B8%8E%E5%90%8C%E6%AD%A5/" class="post-title-link" itemprop="url">3.共享内存和同步</a>
         </h2>
 
         <div class="post-meta">
@@ -763,7 +759,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-21 01:16:15" itemprop="dateModified" datetime="2023-02-21T01:16:15+01:00">2023-02-21</time>
+                <time title="修改时间：2023-02-21 01:29:08" itemprop="dateModified" datetime="2023-02-21T01:29:08+01:00">2023-02-21</time>
               </span>
 
           
@@ -777,8 +773,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <hr>
-<h2 id="title-3-共享内存和同步"><a href="#title-3-共享内存和同步" class="headerlink" title="title:3.共享内存和同步"></a>title:3.共享内存和同步</h2><h2 id="共享内存和同步"><a href="#共享内存和同步" class="headerlink" title="共享内存和同步"></a>共享内存和同步</h2><h3 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h3><p>是一种特殊类型的内存，其内容在内核的源代码中明确定义和使用。 它具有以下特点：</p>
+          <h2 id="共享内存和同步"><a href="#共享内存和同步" class="headerlink" title="共享内存和同步"></a>共享内存和同步</h2><h3 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h3><p>是一种特殊类型的内存，其内容在内核的源代码中明确定义和使用。 它具有以下特点：</p>
 <ul>
 <li>出现在每一个SM</li>
 <li>以比全局内存更高的速度访问（在延迟和吞吐量方面）</li>
